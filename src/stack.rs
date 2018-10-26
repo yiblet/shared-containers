@@ -1,3 +1,4 @@
+use std::iter::{IntoIterator, Iterator};
 use std::rc::Rc;
 
 #[derive(Clone)]
@@ -13,7 +14,6 @@ impl<A> Stack<A> {
     pub fn push(&mut self, element: A) {
         self.stack = match std::mem::replace(&mut self.stack, None) {
             None => Option::Some(Rc::new(Node::new(element))),
-
             Some(ref mut prev) => Some(Rc::new(Node::push(element, prev))),
         }
     }
@@ -39,6 +39,14 @@ impl<A> Stack<A> {
         } else {
             None
         }
+    }
+}
+
+impl<A> Iterator for Stack<A> {
+    type Item = Rc<A>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.pop()
     }
 }
 
